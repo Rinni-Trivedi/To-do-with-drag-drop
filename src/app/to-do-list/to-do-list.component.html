@@ -1,0 +1,80 @@
+<div cdkDropListGroup>
+  <div class="example-container">
+    <h2>Pending Tasks</h2>
+
+    <div cdkDropList [cdkDropListData]="items" class="example-list" (cdkDropListDropped)="drop($event)">
+      <div class="example-box" *ngFor="let item of items; let i = index" cdkDrag>
+        <div class="title-section">
+          <div>
+            <input type="checkbox" (click)="updateItemStatus(i,item)" /> {{item.title}}</div>
+          <div>
+            <button mat-icon-button color="warn" class="delete-button" (click)="editItem(i)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" class="delete-button" (click)="deleteItem(i)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div>
+          <div *ngIf="item.edit" class="itemTitle{{i}}">
+            <input type="text" [(ngModel)]='item.title' placeholder="Enter Title" />
+            <button mat-icon-button color="accent" (click)='hideInputbox($event,i)'>
+              <mat-icon>check_circle</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div class="description-section">{{ item.description }}</div>
+        <div *ngIf="item.edit" class="itemDescription{{i}}">
+          <textarea type="text" [(ngModel)]='item.description' placeholder="Enter Description"></textarea>
+          <button mat-icon-button color="accent" (click)='hideDesInputbox($event,i)'>
+            <mat-icon>check_circle</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="input-container">
+      <form [formGroup]="todoForm">
+        <mat-form-field class="input-width">
+          <mat-label>Item</mat-label>
+          <input matInput #newItemTitle placeholder="add a title..." formControlName="itemTitle" />
+        </mat-form-field>
+        <mat-form-field class="input-width">
+          <textarea matInput #newItemDescription placeholder="add a description..." formControlName="itemDescription"></textarea>
+        </mat-form-field>
+      </form>
+      <mat-error *ngIf="
+ todoForm.get('itemTitle')?.invalid &&
+ (todoForm.get('itemTitle')?.dirty || todoForm.get('itemTitle')?.touched)
+    ">
+        Please write something.
+      </mat-error>
+      <button class="add-button" mat-raised-button color="primary" [disabled]="todoForm.invalid" (click)="addItem(newItemTitle.value,newItemDescription.value,'','')">
+        Add
+      </button>
+    </div>
+  </div>
+
+  <div class="example-container">
+    <h2>Completed Tasks</h2>
+
+    <div cdkDropList [cdkDropListData]="done" class="example-list" (cdkDropListDropped)="drop($event)">
+      <div class="example-box" *ngFor="let item of done; let d = index" cdkDrag>
+        <div class="title-section">
+          <div>
+            <input type="checkbox" [checked]="true" (click)="undoItemStatus(d,item)" />
+            <s>{{item.title}}</s>
+          </div>
+          <div class="icons-box">
+            <button mat-icon-button color="warn" (click)="deleteDoneItem(d)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div class="description-section">
+          <s>{{ item.description }}</s>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
